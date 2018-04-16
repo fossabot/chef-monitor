@@ -47,9 +47,12 @@ if node.key?('ec2')
   sensu_handler 'ec2_node' do
     type 'pipe'
     command 'handler-ec2_node-custom.rb'
-    filters %w(keepalives ec2 every_5_occurrences max_100_occurrences)
+    filters %w(keepalives ec2 every_5_occurrences)
     severities %w(warning critical)
     timeout node['monitor']['default_handler_timeout']
+    additional(
+      handled_silenced: true
+    )
   end
 
   node.set['monitor']['active_handlers']['ec2_node'] = true
