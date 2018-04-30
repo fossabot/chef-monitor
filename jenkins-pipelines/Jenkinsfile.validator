@@ -1,0 +1,55 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent {
+    label 'mgmt'
+  }
+  options {
+      timestamps()
+  }
+  stages {
+    stage ('Bundle install') {
+      steps {
+        sh '''
+          bundle install
+        '''
+      }
+    }
+    stage ('Rubocop stylecheck') {
+      steps {
+        sh '''
+          bundle exec rubocop \
+          -c .rubocop.yml \
+          -r $(bundle show rubocop-junit-formatter)/lib/rubocop/formatter/junit_formatter.rb \
+          --format RuboCop::Formatter::JUnitFormatter --out rubocop-reports/rubocop_report.xml \
+          --format progress \
+          --format html --out rubocop-reports/rubocop_report.html || true
+        '''
+        // Archive rubocop data
+        archiveArtifacts('rubocop-reports/*')
+        // Analyze xml reports and generate jenkins results
+        junit 'rubocop-reports/rubocop_report.xml'
+        // Publish html report for rubocop
+        publishHTML (target: [
+          allowMissing: false,
+          alwaysLinkToLastBuild: false,
+          keepAll: true,
+          reportDir: 'rubocop-reports',
+          reportFiles: 'rubocop_report.html',
+          reportName: 'Rubocop Report'
+        ])
+      }
+    }
+    stage ('Foodcritic stylecheck') {
+      steps {
+        sh '''
+          bundle exec foodcritic -f any -C . | bundle exec foodcritic-junit
+        '''
+        // Archive foodcritic junit xml
+        archiveArtifacts('foodcritic-reports/*')
+        // Analyze xml reports and generate jenkins results
+        junit 'foodcritic-reports/foodcritic-report.xml'
+      }
+    }
+  }
+}
