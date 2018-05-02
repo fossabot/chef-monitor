@@ -53,11 +53,6 @@ pipeline {
     }
     stage ('Kitchen tests (converge/verify/destroy)') {
       steps {
-        sh '''
-          kitchen list -b
-          kitchen doctor
-        '''
-
         script {
           def platforms = sh(
             script: 'kitchen list -b',
