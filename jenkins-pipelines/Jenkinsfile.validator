@@ -55,6 +55,7 @@ pipeline {
       steps {
         sh '''
           kitchen list -b
+          kitchen doctor
         '''
 
         script {
