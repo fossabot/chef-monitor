@@ -48,7 +48,8 @@ pipeline {
         // Archive foodcritic junit xml
         // archiveArtifacts('foodcritic-reports/*')
         // archiveArtifacts('foodcritic-report.xml')
-        archiveArtifacts('reports/foodcritic-report.xml')
+        // archiveArtifacts('reports/foodcritic-report.xml')
+        archiveArtifacts('test/reports/foodcritic-report.xml')
         // Analyze xml reports and generate jenkins results
         junit 'foodcritic-reports/foodcritic-report.xml'
       }
