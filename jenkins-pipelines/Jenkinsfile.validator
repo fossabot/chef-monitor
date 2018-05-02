@@ -54,12 +54,12 @@ pipeline {
     stage ('Kitchen tests') {
       steps {
         sh '''
-          rm -rf .kitchen/
-          kitchen doctor
+          kitchen list -b
         '''
 
         sh '''
-          kitchen list -b
+          rm -rf .kitchen/
+          kitchen doctor
         '''
       }
     }
