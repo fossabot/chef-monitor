@@ -51,7 +51,7 @@ pipeline {
         junit 'test/reports/foodcritic-report.xml'
       }
     }
-    stage ('Kitchen tests') {
+    stage ('Kitchen tests (converge/verify/destroy)') {
       steps {
         script {
           def platforms = sh(
@@ -60,14 +60,29 @@ pipeline {
             ).trim()
           platformslist = platforms.split('\n')
 
+          // Run kitchen test for each line of result
           for(int i = 0; i < platformslist.size(); i++) {
-            echo 'Found kitchen: ' + platformslist[i]
+            sh 'kitchen converge --color --no-log-overwrite --log-level info ' + platformslist[i]
           }
-        }
+          for(int i = 0; i < platformslist.size(); i++) {
+            sh 'kitchen verify --color --no-log-overwrite --log-level info ' + platformslist[i]
+          }
+          for(int i =0; i < platformslist.size(); i++) {
+            sh 'kitchen destroy --color --no-log-overwrite --log-level info ' + platformslist[i]
+          }
 
+          // Archive kitchen logs & reports
+          archiveArtifacts('.kitchen/logs/*')
+          archiveArtifacts('kitchen-reports/*')
+          // Analyze xml reports and generate jenkins results
+          junit 'kitchen-reports/*.xml'
+        }
+      }
+    }
+    stage ('Bump Version') {
+      steps {
         sh '''
-          rm -rf .kitchen/
-          kitchen doctor
+          echo Hello
         '''
       }
     }
