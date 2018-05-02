@@ -54,16 +54,20 @@ pipeline {
     }
     stage ('Kitchen tests') {
       steps {
-        // Collect list of kitchen-tests
-        platforms = sh(
-          script: 'kitchen list -b',
-          returnStdout: true
-          ).trim()
-        platformslist = platforms.split("\n")
+        sh '''
+          kitchen list -b          
+        '''
 
-        for(int i = 0; i < platformslist.size(); i++) {
-          echo "Found kitchen: " + platformslist[i]
-        }
+        // Collect list of kitchen-tests
+        // platforms = sh(
+        //   script: 'kitchen list -b',
+        //   returnStdout: true
+        //   ).trim()
+        // platformslist = platforms.split("\n")
+        //
+        // for(int i = 0; i < platformslist.size(); i++) {
+        //   echo "Found kitchen: " + platformslist[i]
+        // }
 
         sh '''
           rm -rf .kitchen/
