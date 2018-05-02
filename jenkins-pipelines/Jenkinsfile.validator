@@ -46,7 +46,7 @@ pipeline {
           bundle exec foodcritic -f any -C . | bundle exec foodcritic-junit
         '''
         // Archive foodcritic junit xml
-        archiveArtifacts('foodcritic-reports/*')
+        archiveArtifacts('test/reports/foodcritic-report.xml')
         // Analyze xml reports and generate jenkins results
         junit 'test/reports/foodcritic-report.xml'
       }
