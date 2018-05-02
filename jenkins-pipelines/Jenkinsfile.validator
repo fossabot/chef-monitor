@@ -47,7 +47,8 @@ pipeline {
         '''
         // Archive foodcritic junit xml
         // archiveArtifacts('foodcritic-reports/*')
-        archiveArtifacts('test/reports/foodcritic-report.xml')
+        // archiveArtifacts('foodcritic-report.xml')
+        archiveArtifacts('reports/foodcritic-report.xml')
         // Analyze xml reports and generate jenkins results
         junit 'foodcritic-reports/foodcritic-report.xml'
       }
@@ -55,7 +56,7 @@ pipeline {
     stage ('Kitchen tests') {
       steps {
         sh '''
-          kitchen list -b          
+          kitchen list -b
         '''
 
         // Collect list of kitchen-tests
