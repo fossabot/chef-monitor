@@ -53,14 +53,16 @@ pipeline {
     }
     stage ('Kitchen tests') {
       steps {
-        $platforms = sh(
-          script: 'kitchen list -b',
-          returnStdout: true
-          ).trim()
-        $platformslist = $platforms.split('\n')
+        script {
+          def platforms = sh(
+            script: 'kitchen list -b',
+            returnStdout: true
+            ).trim()
+          platformslist = platforms.split('\n')
 
-        for(int i = 0; i < $platformslist.size(); i++) {
-          echo 'Found kitchen: ' + $platformslist[i]
+          for(int i = 0; i < platformslist.size(); i++) {
+            echo 'Found kitchen: ' + platformslist[i]
+          }
         }
 
         sh '''
