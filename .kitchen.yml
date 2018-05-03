@@ -79,7 +79,8 @@ suites:
   run_list:
     - recipe[monitor::master]
   provisioner:
-    require_chef_omnibus: 12
+    product_name: chef
+    product_version: 12
   attributes:
     apt:
      compile_time_update: true
@@ -121,7 +122,8 @@ suites:
   run_list:
     - recipe[monitor::master]
   provisioner:
-    require_chef_omnibus: 12
+    product_name: chef
+    product_version: 12
   attributes:
     apt:
      compile_time_update: true
@@ -161,7 +163,8 @@ suites:
   run_list:
     - recipe[monitor::client]
   provisioner:
-    require_chef_omnibus: 12
+    product_name: chef
+    product_version: 12
   attributes:
     apt:
      compile_time_update: true
@@ -197,7 +200,8 @@ suites:
   run_list:
     - recipe[monitor::client]
   provisioner:
-    require_chef_omnibus: 12
+    product_name: chef
+    product_version: 12
   attributes:
     apt:
      compile_time_update: true
