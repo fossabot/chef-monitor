@@ -55,6 +55,10 @@ client_attributes['influxdb']['tags'] ||= {}
 client_name = node.name
 
 if node.key?('ec2') && node['ec2'].is_a?(Hash)
+  if node['sensu']['instance_id_name_override'] == true
+    client_name = node['ec2']['instance_id']
+    Chef::Log.warn("Overridding sensu client name to be #{client_name}")
+  end
   client_subscriptions << 'aws:ec2'
   client_attributes['ec2'] = {}
   %w(
