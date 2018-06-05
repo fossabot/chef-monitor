@@ -27,6 +27,9 @@ sensu_handler 'deregistration' do
   type 'pipe'
   command "handler-sensu-deregister.rb -i -d #{node['monitor']['deregistration_invalidation_duration']}"
   timeout node['monitor']['default_handler_timeout']
+  additional(
+    handled_silenced: true
+  )
 end
 
 node.default['monitor']['active_handlers']['deregister'] = true

@@ -22,7 +22,7 @@ source_url 'https://github.com/runningman84/chef-monitor'
   supports os
 end
 
-depends 'apt', '~> 6.1.4'
+depends 'apt'
 depends 'sudo'
 depends 'yum-epel'
 depends 'zypper'
