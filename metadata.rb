@@ -7,6 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version '0.10.0'
 chef_version '>= 12'
 
+
 issues_url 'https://github.com/runningman84/chef-monitor/issues'
 source_url 'https://github.com/runningman84/chef-monitor'
 
