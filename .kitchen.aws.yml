@@ -29,7 +29,7 @@ platforms:
         snssqs_publishing_sns_topic_arn: 'arn:aws:sns:eu-central-1:001579709704:sensu-client-1'
         snssqs_consuming_sqs_queue_url: 'https://sqs.eu-central-1.amazonaws.com/001579709704/sensu-server'
     run_list:
-      - recipe[aws::ec2_hints]
+      - recipe[monitor::client]
   - name: sles12
     driver:
       image_id: ami-2af53a45
@@ -40,4 +40,4 @@ platforms:
         snssqs_publishing_sns_topic_arn: 'arn:aws:sns:eu-central-1:001579709704:sensu-client-1'
         snssqs_consuming_sqs_queue_url: 'https://sqs.eu-central-1.amazonaws.com/001579709704/sensu-server'
     run_list:
-      - recipe[aws::ec2_hints]
+      - recipe[monitor::master]
