@@ -20,24 +20,24 @@ transport:
 
 platforms:
   - name: ubuntu-14.04
-    transport.user: ubuntu
     driver:
-      image_search:
-        owner-id: "001579709704"
-        name: "asy-ubuntu-1404-chef-sensu*"
+      image_id: ami-09618e66
     attributes:
-      asy-base:
-        mount:
-          data:
-            enabled: true
-  - name: ubuntu-16.04
-    transport.user: ubuntu
+      monitor:
+        redis_address: sensu-redis.utgwtc.ng.0001.euc1.cache.amazonaws.com
+        transport: snssqs
+        snssqs_publishing_sns_topic_arn: 'arn:aws:sns:eu-central-1:001579709704:sensu-client-1'
+        snssqs_consuming_sqs_queue_url: 'https://sqs.eu-central-1.amazonaws.com/001579709704/sensu-server'
+    run_list:
+      - recipe[aws::ec2_hints]
+  - name: sles12
     driver:
-      image_search:
-        owner-id: "001579709704"
-        name: "asy-ubuntu-1604-chef-sensu*"
+      image_id: ami-2af53a45
     attributes:
-      asy-base:
-        mount:
-          data:
-            enabled: true
+      monitor:
+        redis_address: sensu-redis.utgwtc.ng.0001.euc1.cache.amazonaws.com
+        transport: snssqs
+        snssqs_publishing_sns_topic_arn: 'arn:aws:sns:eu-central-1:001579709704:sensu-client-1'
+        snssqs_consuming_sqs_queue_url: 'https://sqs.eu-central-1.amazonaws.com/001579709704/sensu-server'
+    run_list:
+      - recipe[aws::ec2_hints]
