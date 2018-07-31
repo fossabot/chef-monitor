@@ -1,7 +1,7 @@
 ---
 driver:
   name: ec2
-  instance_type: t2.small
+  instance_type: t2.micro
   region: eu-central-1
   iam_profile_name: chef-full-access-role-test
   associate_public_ip: true
