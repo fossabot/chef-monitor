@@ -23,7 +23,7 @@ source_url 'https://github.com/runningman84/chef-monitor'
 end
 
 depends 'apt', '~> 6.1.4'
-depends 'chef-vault', '~> 3.1.0'
+depends 'chef-vault', '~> 3.3.0'
 depends 'sudo'
 depends 'yum-epel'
 depends 'zypper'
