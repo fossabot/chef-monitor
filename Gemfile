@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'berkshelf'
 gem 'chef'
-gem 'chef-vault', '3.3.0'
+gem 'chef-vault', '3.1.0'
 gem 'chef-zero'
 gem 'foodcritic', '10.2.2'
 gem 'foodcritic-junit'
