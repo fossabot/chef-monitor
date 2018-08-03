@@ -1,13 +1,13 @@
 ---
 driver:
   name: ec2
-  aws_ssh_key_id: mysshkey
-  security_group_ids: ["sg-1234567a"]
+  aws_ssh_key_id: sing102aws
+  security_group_ids: ["sg-25024a4c"]
   region: eu-central-1
-  availability_zone: b
+  availability_zone: a
   require_chef_omnibus: true
-  subnet_id: subnet-9a6467e2
-  iam_profile_name: SensuInstanceProfile
+  subnet_id: subnet-0ecf2f67
+  iam_profile_name: TestKitchenRole
   instance_type: t2.small
 #  price: 0.6
   associate_public_ip: true
@@ -19,6 +19,7 @@ transport:
 #  ssh_key: /path/to/id_rsa-aws
   connection_timeout: 10
   connection_retries: 5
+  name: speedy_ssh
   username: ubuntu
 
 platforms:
