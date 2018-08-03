@@ -5,7 +5,16 @@ pipeline {
     label 'mgmt'
   }
   options {
-      timestamps()
+    timestamps()
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10',
+        artifactNumToKeepStr: '10'
+      )
+    )
+  }
+  triggers {
+    cron('H H(00-02) * * *')
   }
   stages {
     stage ('Bundle install') {
@@ -28,7 +37,7 @@ pipeline {
         // Archive rubocop data
         archiveArtifacts('rubocop-reports/*')
         // Analyze xml reports and generate jenkins results
-        junit 'rubocop-reports/rubocop_report.xml'
+         junit 'rubocop-reports/rubocop_report.xml'
         // Publish html report for rubocop
         publishHTML (target: [
           allowMissing: false,
@@ -48,37 +57,45 @@ pipeline {
         // Archive foodcritic junit xml
         archiveArtifacts('test/reports/foodcritic-report.xml')
         // Analyze xml reports and generate jenkins results
-        junit 'test/reports/foodcritic-report.xml'
+         junit 'test/reports/foodcritic-report.xml'
       }
     }
     stage ('Kitchen tests (converge/verify/destroy)') {
+      environment {
+        // KITCHEN_EC2_SSH_KEY_ID = 'jenkins-arvatoaws'
+        USER = 'jenkins-arvato'
+        // KITCHEN_EC2_SSH_KEY_FILE = 'jenkins-arvatoaws'
+      }
       steps {
         script {
-          sh '''
-            ln -s .kitchen.aws.yml .kitchen.local.yml
-          '''
+          sshagent (credentials: ['11da26ae-bf5e-4c18-b744-b8056d1559b4']) {
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Abteilungsaccount']]) {
+              sh '''
+                ln -s .kitchen.aws.yml .kitchen.local.yml
+              '''
+              def platforms = sh(
+                script: 'kitchen list -b',
+                returnStdout: true
+                ).trim()
+              platformslist = platforms.split('\n')
 
-          def platforms = sh(
-            script: 'kitchen list -b',
-            returnStdout: true
-            ).trim()
-          platformslist = platforms.split('\n')
+              // Run kitchen test for each line of result
+              for(int i = 0; i < platformslist.size(); i++) {
+                sh 'kitchen converge --color --no-log-overwrite --log-level debug ' + platformslist[i]
+              }
+              for(int i = 0; i < platformslist.size(); i++) {
+                sh 'kitchen verify --color --no-log-overwrite --log-level info ' + platformslist[i]
+              }
+              for(int i =0; i < platformslist.size(); i++) {
+                sh 'kitchen destroy --color --no-log-overwrite --log-level info ' + platformslist[i]
+              }
 
-          // Run kitchen test for each line of result
-          for(int i = 0; i < platformslist.size(); i++) {
-            sh 'kitchen converge --color --no-log-overwrite --log-level info ' + platformslist[i]
+              // Archive kitchen logs & reports
+              archiveArtifacts('.kitchen/logs/*')
+              }
+            }
           }
-          for(int i = 0; i < platformslist.size(); i++) {
-            sh 'kitchen verify --color --no-log-overwrite --log-level info ' + platformslist[i]
-          }
-          for(int i =0; i < platformslist.size(); i++) {
-            sh 'kitchen destroy --color --no-log-overwrite --log-level info ' + platformslist[i]
-          }
-
-          // Archive kitchen logs & reports
-          archiveArtifacts('.kitchen/logs/*')
         }
-      }
     }
     stage ('Bump version') {
       steps {
@@ -106,5 +123,21 @@ pipeline {
         }
       }
     }
- }
+    changed {
+      script {
+        if (!env.SendSlack) {
+          env.SendSlack = true
+          sendNotifications(buildStatus: currentBuild.result, channelSlack: 'ops-mgmt')
+        }
+      }
+    }
+    failure {
+      script {
+        if (!env.SendSlack) {
+          env.SendSlack = true
+          sendNotifications(buildStatus: currentBuild.result, channelSlack: 'ops-mgmt')
+        }
+      }
+    }
+  }
 }
