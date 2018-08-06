@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-if node['monitor']['rabbitmq_address'].nil?
-  include_recipe 'monitor::_install_rabbitmq' if node['monitor']['transport'] == 'rabbitmq'
-end
+# if node['monitor']['rabbitmq_address'].nil?
+#  include_recipe 'monitor::_install_rabbitmq' if node['monitor']['transport'] == 'rabbitmq'
+# end
 
 if node['monitor']['redis_address'].nil?
   include_recipe 'monitor::_install_redis'
@@ -28,14 +28,14 @@ else
 end
 node.override['sensu']['redis']['db'] = node['monitor']['redis_db'] unless node['monitor']['redis_db'].nil?
 
-node.override['sensu']['use_ssl'] = false unless node['monitor']['transport'] == 'rabbitmq'
+# node.override['sensu']['use_ssl'] = false unless node['monitor']['transport'] == 'rabbitmq'
 
 include_recipe 'sensu::default'
 
 include_recipe 'monitor::_fix_service'
 
 node.override['sensu']['transport']['name'] = node['monitor']['transport']
-include_recipe "monitor::_transport_#{node['monitor']['transport']}"
+# include_recipe "monitor::_transport_#{node['monitor']['transport']}"
 node.override['sensu']['api']['host'] = 'localhost'
 
 active_default_handlers = []
@@ -83,7 +83,7 @@ end
 
 include_recipe 'monitor::client'
 include_recipe 'monitor::_check_redis'
-include_recipe 'monitor::_check_rabbitmq' if node['monitor']['transport'] == 'rabbitmq'
+# include_recipe 'monitor::_check_rabbitmq' if node['monitor']['transport'] == 'rabbitmq'
 include_recipe 'monitor::_check_from_databags'
 
 include_recipe 'sensu::server_service'

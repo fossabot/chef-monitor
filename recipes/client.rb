@@ -21,8 +21,6 @@
 require 'digest'
 require 'resolv'
 
-node.override['sensu']['use_ssl'] = false unless node['monitor']['transport'] == 'rabbitmq'
-
 include_recipe 'sensu::default'
 
 if node['platform_family'].include?('windows')
@@ -31,7 +29,7 @@ else
   include_recipe 'monitor::_fix_service'
 end
 
-include_recipe "monitor::_transport_#{node['monitor']['transport']}"
+# include_recipe "monitor::_transport_#{node['monitor']['transport']}"
 node.override['sensu']['transport']['name'] = node['monitor']['transport']
 
 ip_type = node['monitor']['use_local_ipv4'] ? 'local_ipv4' : 'public_ipv4'

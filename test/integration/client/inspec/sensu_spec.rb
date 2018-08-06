@@ -19,8 +19,6 @@ end
 # end
 
 describe json('/etc/sensu/config.json') do
-    its(['transport','name']) { should eq 'rabbitmq'}
-    its(['rabbitmq',0,'host']) { should eq 'localhost'} # TODO: port should be 5671
     its(['redis','host']) { should eq 'localhost'} # TODO: port should be 6379
     its(['api','host']) { should eq 'localhost'} # TODO: port should be 4567
 end
