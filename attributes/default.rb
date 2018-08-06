@@ -16,12 +16,12 @@ override['uchiwa']['version'] = '1.1.3-2'
 
 default['monitor']['redis_address'] = nil
 default['monitor']['redis_db'] = nil
-default['monitor']['rabbitmq_address'] = nil
+# default['monitor']['rabbitmq_address'] = nil
 default['monitor']['api_address'] = nil
 default['monitor']['graphite_address'] = nil
 default['monitor']['influxdb_address'] = nil
 
-default['monitor']['transport'] = 'rabbitmq'
+# default['monitor']['transport'] = 'rabbitmq'
 
 default['monitor']['master_search_query'] = 'recipes:monitor\\:\\:master'
 default['monitor']['graphite_search_query'] = 'recipes:graphite\\:\\:carbon'
@@ -90,14 +90,3 @@ default['monitor']['remedy_component'] = nil
 
 # build-essential
 normal['build-essential']['compile_time'] = true
-
-# rabbitmq
-default['rabbitmq']['use_distro_version'] = true
-if node['platform'].include?('ubuntu')
-  # if node['lsb']['release'] == '14.04'
-  default['rabbitmq']['use_distro_version'] = false
-  # default['rabbitmq']['version'] = '3.5.7'
-  # end
-elsif node['platform_family'].include?('rhel')
-  default['rabbitmq']['use_distro_version'] = false
-end
