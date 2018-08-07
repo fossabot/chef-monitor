@@ -1,3 +1,4 @@
+---
 driver:
   name: ec2
   security_group_ids: ["<%= ENV.fetch('KITCHEN_EC2_SECURITY_GROUP', 'sg-25024a4c') %>"]
