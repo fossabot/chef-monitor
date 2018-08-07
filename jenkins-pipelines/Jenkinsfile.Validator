@@ -1,0 +1,143 @@
+#!/usr/bin/env groovy
+
+pipeline {
+  agent {
+    label 'mgmt'
+  }
+  options {
+    timestamps()
+    buildDiscarder(
+      logRotator(
+        numToKeepStr: '10',
+        artifactNumToKeepStr: '10'
+      )
+    )
+  }
+  triggers {
+    cron('H H(00-02) * * *')
+  }
+  stages {
+    stage ('Bundle install') {
+      steps {
+        sh '''
+          bundle install
+        '''
+      }
+    }
+    stage ('Rubocop stylecheck') {
+      steps {
+        sh '''
+          bundle exec rubocop \
+          -c .rubocop.yml \
+          -r $(bundle show rubocop-junit-formatter)/lib/rubocop/formatter/junit_formatter.rb \
+          --format RuboCop::Formatter::JUnitFormatter --out rubocop-reports/rubocop_report.xml \
+          --format progress \
+          --format html --out rubocop-reports/rubocop_report.html || true
+        '''
+        // Archive rubocop data
+        archiveArtifacts('rubocop-reports/*')
+        // Analyze xml reports and generate jenkins results
+         junit 'rubocop-reports/rubocop_report.xml'
+        // Publish html report for rubocop
+        publishHTML (target: [
+          allowMissing: false,
+          alwaysLinkToLastBuild: false,
+          keepAll: true,
+          reportDir: 'rubocop-reports',
+          reportFiles: 'rubocop_report.html',
+          reportName: 'Rubocop Report'
+        ])
+      }
+    }
+    stage ('Foodcritic stylecheck') {
+      steps {
+        sh '''
+          bundle exec foodcritic -f any -C . | bundle exec foodcritic-junit
+        '''
+        // Archive foodcritic junit xml
+        archiveArtifacts('test/reports/foodcritic-report.xml')
+        // Analyze xml reports and generate jenkins results
+         junit 'test/reports/foodcritic-report.xml'
+      }
+    }
+    stage ('Kitchen tests (converge/verify/destroy)') {
+      environment {
+        // KITCHEN_EC2_SSH_KEY_ID = 'jenkins-arvatoaws'
+        USER = 'jenkins-arvato'
+        // KITCHEN_EC2_SSH_KEY_FILE = 'jenkins-arvatoaws'
+      }
+      steps {
+        script {
+          sshagent (credentials: ['11da26ae-bf5e-4c18-b744-b8056d1559b4']) {
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'Abteilungsaccount']]) {
+              sh '''
+                ln -s .kitchen.aws.yml .kitchen.local.yml
+              '''
+              def platforms = sh(
+                script: 'kitchen list -b',
+                returnStdout: true
+                ).trim()
+              platformslist = platforms.split('\n')
+
+              // Run kitchen test for each line of result
+              for(int i = 0; i < platformslist.size(); i++) {
+                sh 'kitchen converge --color --no-log-overwrite --log-level debug ' + platformslist[i]
+              }
+              for(int i = 0; i < platformslist.size(); i++) {
+                sh 'kitchen verify --color --no-log-overwrite --log-level info ' + platformslist[i]
+              }
+              for(int i =0; i < platformslist.size(); i++) {
+                sh 'kitchen destroy --color --no-log-overwrite --log-level info ' + platformslist[i]
+              }
+
+              // Archive kitchen logs & reports
+              archiveArtifacts('.kitchen/logs/*')
+              }
+            }
+          }
+        }
+    }
+    stage ('Bump version') {
+      steps {
+        sshagent (credentials: ['11da26ae-bf5e-4c18-b744-b8056d1559b4']) {
+          script {
+            if (env.BRANCH_NAME == 'master') {
+              bumpVersion()
+            }
+          }
+        }
+      }
+    }
+  }
+  post {
+    always {
+      script {
+        def platforms = sh(
+          script: 'kitchen list -b',
+          returnStdout: true
+        ).trim()
+        platformslist = platforms.split('\n')
+
+        for(int i =0; i < platformslist.size(); i++) {
+          sh 'kitchen destroy --color --no-log-overwrite --log-level info ' + platformslist[i]
+        }
+      }
+    }
+    changed {
+      script {
+        if (!env.SendSlack) {
+          env.SendSlack = true
+          sendNotifications(buildStatus: currentBuild.result, channelSlack: 'ops-mgmt')
+        }
+      }
+    }
+    failure {
+      script {
+        if (!env.SendSlack) {
+          env.SendSlack = true
+          sendNotifications(buildStatus: currentBuild.result, channelSlack: 'ops-mgmt')
+        }
+      }
+    }
+  }
+}
