@@ -16,18 +16,11 @@ describe file('/etc/sensu') do
 end
 
 describe json('/etc/sensu/config.json') do
-    its(['transport','name']) { should eq 'rabbitmq'}
-    its(['rabbitmq',0,'host']) { should eq 'localhost'} # TODO: port should be 5671
+    # its(['transport','name']) { should eq 'rabbitmq'}
+    # its(['rabbitmq',0,'host']) { should eq 'localhost'} # TODO: port should be 5671
     its(['redis','host']) { should eq 'localhost'} # TODO: port should be 6379
     its(['api','host']) { should eq 'localhost'} # TODO: port should be 4567
 end
-
-# describe file('/etc/sensu/config.json') do
-#   it { should contain('"name": "rabbitmq').after(/transport/) }
-#   it { should contain('"host": "localhost"').after(/rabbitmq/).before(/5671/) }
-#   it { should contain('"host": "localhost"').after(/redis/).before(/6379/) }
-#   it { should contain('"host": "localhost"').after(/api/).before(/4567/) }
-# end
 
 describe file('/etc/sensu/conf.d') do
   it { should be_directory }
@@ -125,29 +118,18 @@ describe command('curl -s -I "http://localhost:4567/health?consumers=1&messages=
   its(:stdout) { should include('HTTP/1.1 204') }
 end
 
-describe json({ command: 'curl -s "http://localhost:4567/info"'}) do
+describe command('curl -s "http://localhost:4567/info') do
   # test rabbitmq connect
     its(['transport','connected']) { should eq true}
     its(['redis','connected']) { should eq true}
 end
 
-# describe command('curl -s http://localhost:4567/clients') do
-#   # test version
-#   its(:stdout) { should contain('0.28.5').after('version') }
-#
-#   # test subscriptions
-#   its(:stdout) { should contain('linux').after('subscriptions') }
-#
-#   # test subscriptions
-#   its(:stdout) { should contain('all').after('subscriptions') }
+# control 'check_clients' do
+#  json_obj = json({ command: 'curl -s "http://localhost:4567/clients"'})
+#  describe json_obj.length do
+#    it {should > 0}
+#  end
 # end
-
-control 'check_clients' do
-  json_obj = json({ command: 'curl -s "http://localhost:4567/clients"'})
-  describe json_obj.length do
-    it {should > 0}
-  end
-end
 
 describe command('curl -s http://localhost:4567/events') do
   its(:stdout) { should eq('[]') }

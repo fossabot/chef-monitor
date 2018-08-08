@@ -21,7 +21,7 @@ default['monitor']['api_address'] = nil
 default['monitor']['graphite_address'] = nil
 default['monitor']['influxdb_address'] = nil
 
-# default['monitor']['transport'] = 'rabbitmq'
+default['monitor']['transport'] = 'snssqs'
 
 default['monitor']['master_search_query'] = 'recipes:monitor\\:\\:master'
 default['monitor']['graphite_search_query'] = 'recipes:graphite\\:\\:carbon'

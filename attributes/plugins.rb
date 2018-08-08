@@ -20,7 +20,7 @@ end
 
 default['monitor']['sensu_optional_plugins']['slack'] = '2.0.0'
 
-default['monitor']['sensu_gem_versions']['sensu-plugins-rabbitmq'] = '3.6.0'
+# default['monitor']['sensu_gem_versions']['sensu-plugins-rabbitmq'] = '3.6.0'
 default['monitor']['sensu_gem_versions']['sensu-plugins-redis'] = '2.2.1'
 default['monitor']['sensu_gem_versions']['sensu-plugins-chef'] = '4.0.0'
 default['monitor']['sensu_gem_versions']['sensu-plugins-aws'] = '10.2.0'
