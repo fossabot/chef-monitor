@@ -120,7 +120,7 @@ end
 
 describe command('curl -s "http://localhost:4567/info') do
   # test rabbitmq connect
-    its(['transport','connected']) { should eq true}
+    # its(['transport','connected']) { should eq true}
     its(['redis','connected']) { should eq true}
 end
 
