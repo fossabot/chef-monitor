@@ -55,6 +55,6 @@ if node.key?('ec2')
     )
   end
 
-  node.default['monitor']['active_handlers']['ec2_node'] = true
+  # node.default['monitor']['active_handlers']['ec2_node'] = true
 
 end
