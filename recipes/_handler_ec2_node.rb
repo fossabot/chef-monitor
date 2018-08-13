@@ -55,6 +55,6 @@ if node.key?('ec2')
     )
   end
 
-  node.set['monitor']['active_handlers']['ec2_node'] = true
+  node.override['monitor']['active_handlers']['ec2_node'] = true
 
 end
