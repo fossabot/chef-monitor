@@ -19,15 +19,10 @@ verifier:
   <% end %>
 
 transport:
-    name: speedy_ssh
+  name: speedy_ssh
 
 platforms:
-  #  - name: ubuntu-14.04
-  #    driver:
-  #      box: asy/trusty64-lxc
-  #      provider: lxc
-  #    run_list:
-  #      - recipe[apt]
+
   - name: ubuntu-16.04
     driver:
       box: asy/xenial64-lxc
