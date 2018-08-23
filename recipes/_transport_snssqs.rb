@@ -56,6 +56,14 @@ if node.key?('ec2') && node['ec2'].key?('placement_availability_zone')
   end
 end
 
+cookbook_file '/opt/sensu/embedded/lib/ruby/gems/2.4.0/gems/sensu-transport-snssqs-ng-2.2.2/lib/sensu/transport/snssqs.rb' do
+  source 'snssqs.rb'
+  owner 'root'
+  group 'root'
+  mode '0644'
+  action :create
+end
+
 sensu_snippet 'snssqs' do
   content(
     max_number_of_messages: node['monitor']['snssqs_max_number_of_messages'].to_i,
@@ -65,6 +73,11 @@ sensu_snippet 'snssqs' do
     publishing_sns_topic_arn: node['monitor']['snssqs_publishing_sns_topic_arn'],
     access_key_id: node['monitor']['access_key_id'],
     secret_access_key: node['monitor']['secret_access_key']
+    buffer_messages: node['monitor']['snssqs_buffer_messages'],
+    check_min_ok: node['monitor']['snssqs_check_min_ok'],
+    check_max_delay: node['monitor']['snssqs_check_max_delay'],
+    metrics_max_size: node['monitor']['snssqs_metrics_max_size'],
+    metrics_max_delay: node['monitor']['snssqs_metrics_max_delay']
   )
 end
 
