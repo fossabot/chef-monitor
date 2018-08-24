@@ -62,6 +62,7 @@ cookbook_file '/opt/sensu/embedded/lib/ruby/gems/2.4.0/gems/sensu-transport-snss
   group 'root'
   mode '0644'
   action :create
+  notifies :create, 'ruby_block[sensu_service_trigger]', :immediately
 end
 
 sensu_snippet 'snssqs' do
