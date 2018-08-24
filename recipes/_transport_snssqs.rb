@@ -73,7 +73,7 @@ sensu_snippet 'snssqs' do
     consuming_sqs_queue_url: node['monitor']['snssqs_consuming_sqs_queue_url'],
     publishing_sns_topic_arn: node['monitor']['snssqs_publishing_sns_topic_arn'],
     access_key_id: node['monitor']['access_key_id'],
-    secret_access_key: node['monitor']['secret_access_key']
+    secret_access_key: node['monitor']['secret_access_key'],
     buffer_messages: node['monitor']['snssqs_buffer_messages'],
     check_min_ok: node['monitor']['snssqs_check_min_ok'],
     check_max_delay: node['monitor']['snssqs_check_max_delay'],
