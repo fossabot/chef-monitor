@@ -74,6 +74,7 @@ default['monitor']['snssqs_check_min_ok'] = 10
 default['monitor']['snssqs_check_max_delay'] = 1800
 default['monitor']['snssqs_metrics_max_size'] = 102_400
 default['monitor']['snssqs_metrics_max_delay'] = 900
+default['monitor']['snssqs_replace_transport'] = true
 default['monitor']['access_key_id'] = nil
 default['monitor']['secret_access_key'] = nil
 
