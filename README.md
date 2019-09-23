@@ -1,4 +1,5 @@
 Description [![Build Status](https://travis-ci.org/runningman84/chef-monitor.svg?branch=master)](https://travis-ci.org/runningman84/chef-monitor)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Farvatoaws-labs%2Fchef-monitor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Farvatoaws-labs%2Fchef-monitor?ref=badge_shield)
 ===========
 
 Monitor is a cookbook for monitoring services, using Sensu, a
@@ -66,3 +67,7 @@ Example: To monitor a Chef node, include
 
 Please create application specific checks within your application cookbooks.
 This cookbook only contains base checks.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Farvatoaws-labs%2Fchef-monitor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Farvatoaws-labs%2Fchef-monitor?ref=badge_large)
